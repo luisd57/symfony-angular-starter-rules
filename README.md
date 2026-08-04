@@ -27,7 +27,7 @@ fill the `{{PLACEHOLDER}}` tokens, and tell an agent to follow `SCAFFOLDING.md`.
 The rules encode deliberate deviations from textbook practice, marked "do not fix" so an
 agent doesn't helpfully undo them:
 
-- ORM attributes live on Domain entities, and there are **no Doctrine relation attributes** — aggregates reference each other by ID value objects.
+- ORM attributes live on Domain entities, and there are **no Doctrine relation attributes** — aggregates reference each other by ID value objects. This is a mapping rule, not a schema rule: migrations still declare foreign keys with explicit cascade semantics.
 - **No validation attributes on DTOs**; controllers validate the decoded request array. Value objects are the real guard.
 - **No kernel exception listener** — each controller action catches the exceptions it can produce and maps the status.
 - Repositories flush; handlers never manage transactions.
