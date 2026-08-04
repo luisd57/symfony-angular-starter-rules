@@ -1,7 +1,7 @@
 # symfony-angular-starter-rules
 
 A reusable starting point for agentic coding on a Symfony + Angular stack: conventions, a
-scaffold guide, and battle-tested boilerplate, extracted from a production codebase.
+scaffold guide, and battle-tested boilerplate.
 
 Copy `CLAUDE.md`, `.claude/`, `SCAFFOLDING.md` and `boilerplate/` into an empty project,
 fill the `{{PLACEHOLDER}}` tokens, and tell an agent to follow `SCAFFOLDING.md`.
@@ -34,10 +34,3 @@ agent doesn't helpfully undo them:
 
 Rules files stay terse on purpose (see `.claude/rules/documentation-style.md`). A rule earns
 its place only if an agent would otherwise get it wrong.
-
-## Provenance
-
-Extracted from a production practice-management system, then validated by using it to
-rewrite a second, unrelated application end to end. Gaps that surfaced during that rewrite
-— a Docker named-volume ownership trap, a JSON float-encoding default, an unwired dev
-proxy, and how to choose domain boundaries — are folded back in.
