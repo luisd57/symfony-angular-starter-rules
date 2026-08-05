@@ -1,6 +1,6 @@
 # API Boilerplate
 
-Battle-tested infrastructure + test files, extracted from a production project. Copy into the new API during scaffolding (step 2.4/2.5 of SCAFFOLDING.md) instead of reimplementing from spec.
+Battle-tested infrastructure + test files, extracted from a production project. Copy into the new API during scaffolding (phase 2 of the `/scaffold-project` skill) instead of reimplementing from spec.
 
 ## Copy verbatim
 - `src/Infrastructure/Http/Controller/ApiResponseTrait.php` — response envelope + pagination

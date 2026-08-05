@@ -14,8 +14,8 @@ Infrastructure → Application → Domain (never the reverse)
 
 ## ORM Pragmatism (deliberate, do not "fix")
 
-- ORM attributes (`#[ORM\...]`) live directly on Domain entities. No separate mapping layer (XML/annotations-elsewhere) — we don't plan to swap ORMs.
-- NO Doctrine relation attributes (`OneToMany`, `ManyToOne`, `mappedBy`, `inversedBy`). Entities reference other aggregates by ID value objects; repositories resolve them. Never introduce bidirectional mappings.
+- ORM attributes (`#[ORM\...]`) live directly on Domain entities. No separate mapping layer (XML/annotations-elsewhere): the abstraction only pays off if you swap ORMs, and at the scale these projects run at that isn't happening.
+- NO Doctrine relation attributes (`OneToMany`, `ManyToOne`, `mappedBy`, `inversedBy`). Entities reference other aggregates by ID value objects; repositories resolve them. Never introduce bidirectional mappings — they buy coupling between aggregates and lazy-loading surprises, and explicit repository lookups are cheaper to reason about.
 - This is an ORM-mapping rule, NOT a schema rule. Migrations still declare `FOREIGN KEY` constraints with explicit `ON DELETE CASCADE` / `SET NULL`: referential integrity belongs in the database, and hand-rolled cascades in repositories fail silently when they miss a row.
 - VO persistence: single-column VO → custom DBAL type extending the NEAREST base type (e.g. `GuidType`), with `public const string NAME`. Multi-field VO → `#[ORM\Embeddable]` on the VO + `#[ORM\Embedded(columnPrefix: false)]` on the entity, and the `ValueObject/` dir registered as its own doctrine.yaml mapping entry.
 - ORM attributes go on promoted constructor params for immutable fields; mutable state is declared as class properties.
@@ -40,7 +40,7 @@ Infrastructure → Application → Domain (never the reverse)
 ## Infrastructure Layer
 
 - `Persistence/Doctrine/Type/` — custom DBAL types for VO↔DB mapping
-- `Persistence/Doctrine/Repository/` — repository implementations. `save()` = contains-guard → persist → flush; handlers NEVER call flush or manage transactions (no transaction middleware — accepted trade-off). Unwrap VOs before Doctrine (`$id->getValue()`, `$enum->value`); return `ArrayCollection`
+- `Persistence/Doctrine/Repository/` — repository implementations. `save()` = contains-guard → persist → flush; handlers NEVER call flush or manage transactions. No transaction middleware — an accepted trade-off: a use case that writes two aggregates isn't atomic, which is fine at this scale and worth revisiting if it stops being. Unwrap VOs before Doctrine (`$id->getValue()`, `$enum->value`); return `ArrayCollection`
 - `Security/` — password hasher, JWT, token revocation (Redis)
 - `Email/` — mailer adapter. No Twig/templates dir: senders build html+text via private heredocs, `htmlspecialchars(ENT_QUOTES | ENT_HTML5)` on every interpolated value. Callers try/catch `\Throwable` + log — email failure never fails the use case
 - `Http/Controller/` — thin controllers, delegate to handlers
