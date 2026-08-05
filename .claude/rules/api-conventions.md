@@ -53,10 +53,10 @@ paths:
 - Class-level `#[Route('/api/<segment>')]`; method-level always explicit `name: 'api_*'` (snake_case) and `methods: [...]`
 
 ## Validation (deliberate, do not "fix")
-- NO `#[Assert]` attributes on DTOs, NO `#[MapRequestPayload]`. Controllers validate the decoded array via `ValidatesRequestTrait` (422, `details` = field → first message). Value Objects are the real guard.
+- NO `#[Assert]` attributes on DTOs, NO `#[MapRequestPayload]`. Controllers validate the decoded array via `ValidatesRequestTrait` (422, `details` = field → first message). Value Objects are the real guard — attribute validation duplicates their rules and drifts out of sync with them.
 
 ## Errors (deliberate, do not "fix")
-- NO kernel exception listener. Each action catches the specific domain exceptions it can produce.
+- NO kernel exception listener. Each action catches the specific domain exceptions it can produce — a central listener has to guess, and turns every unmapped exception into a 500 nobody notices.
 - `DomainException` base carries a SCREAMING_SNAKE `errorCode` → response `code` field.
 - Status map: not found 404 · invalid state transition/conflict 409 · bad credentials/inactive 401 · VO `InvalidArgumentException` 422 · malformed/expired token 400
 

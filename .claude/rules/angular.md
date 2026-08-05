@@ -5,7 +5,7 @@ paths:
   - app/src/**/*.html
   - app/src/**/*.scss
 ---
-# Angular Conventions
+# Angular Structure
 
 ## Domain-Based Folder Structure
 
@@ -35,14 +35,9 @@ feature  →  data-access  →  utils
 
 ## Choosing Domains
 
-Cut domains by DATA OWNERSHIP (a bounded context that owns its entities), not by page.
-Page-shaped domains over shared entities force every service into `shared/`, because the
-no-cross-domain-imports rule leaves nowhere else to put them.
+Cut domains by DATA OWNERSHIP (a bounded context that owns its entities), not by page — page-shaped domains over shared entities force every service into `shared/`, since the no-cross-domain-imports rule leaves nowhere else to put them.
 
-Smell test: if most `*.service.ts` end up in `shared/data-access/`, the domains are pages
-and the layout is a `services/` folder wearing a costume. Either re-cut the domains around
-the entities, or consciously accept a shared entity-service layer — acceptable for small
-apps, but record it in CLAUDE.md as deliberate so it doesn't get "fixed" later.
+Smell test: if most `*.service.ts` end up in `shared/data-access/`, the domains are pages and the layout is a `services/` folder wearing a costume. Re-cut around the entities, or consciously accept a shared entity-service layer — fine for small apps, but record it in CLAUDE.md as deliberate so it doesn't get "fixed" later.
 
 ## Growing Domains
 - Nesting is for routes (`:id/detail`), NOT folders. All pages are siblings under `feature/`.
@@ -83,25 +78,3 @@ Kebab-case for all files/folders. One component/service/store per file. No `inde
 - Only smart components (feature/) may inject from data-access/
 - Interceptor does exactly two things: `withCredentials` + 401 → logout. Envelope unwrapping is a per-service `unwrap<T>()`; `ApiResponse<T>` lives in `shared/utils/api-response.model.ts`.
 - Consume API snake_case field names as-is — no camelCase mapping layer
-
-## E2E (Playwright)
-
-- Do NOT gate assertions on `networkidle`: it fires before a lazily-loaded route's chunk issues its XHRs, so a correct page screenshots as empty. Wait on the content itself (`expect(locator).toBeVisible()`).
-- Run the browser with the app's timezone (`TZ=...`); a UTC container silently shifts every rendered local timestamp.
-
-## Style
-- Explicit types on every declaration/member/parameter (ESLint `typedef` + `explicit-function-return-type`, strictTypeChecked); `no-inferrable-types` stays OFF
-- Template-only members `protected`; exposed signals `readonly`; selector prefix `app`
-- With Angular Material: all colors via `mat.theme()` / `--mat-sys-*` tokens — component SCSS never hardcodes colors
-
-## Modern Angular Standards (v21+)
-- All components standalone — NO NgModules, no `.module.ts` files
-- Signal APIs: `input()`, `output()`, `model()` — NOT `@Input()`, `@Output()`
-- `inject()` function — NOT constructor injection
-- State: `signal()`, `computed()`, `linkedSignal()`, `resource()` / `httpResource()`
-- Control flow: `@if`, `@for`, `@switch` — NOT `*ngIf`, `*ngFor`, `*ngSwitch`
-- Zoneless by default — no Zone.js
-- Functional providers in `app.config.ts`: `provideRouter()`, `provideHttpClient()`
-- Vitest for testing — NOT Karma/Jasmine
-- Signal Forms (`@angular/forms/signals`) for new forms
-- Prefer `[class]` / `[style]` bindings over `NgClass` / `NgStyle`
