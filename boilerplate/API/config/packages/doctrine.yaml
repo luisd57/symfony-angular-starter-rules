@@ -1,0 +1,52 @@
+# config/packages/doctrine.yaml
+doctrine:
+    dbal:
+        url: '%env(resolve:DATABASE_URL)%'
+        profiling_collect_backtrace: '%kernel.debug%'
+        # One entry per single-column value object. The type class extends the
+        # NEAREST base DBAL type (GuidType for UUID ids, StringType for strings)
+        # and declares `public const string NAME`.
+        types:
+            email: App\Infrastructure\Persistence\Doctrine\Type\EmailType
+            user_id: App\Infrastructure\Persistence\Doctrine\Type\UserIdType
+            hashed_string: App\Infrastructure\Persistence\Doctrine\Type\HashedStringType
+            # {{FILL: one line per remaining VO type, e.g.
+            #   <snake_name>: App\Infrastructure\Persistence\Doctrine\Type\<Name>Type}}
+    orm:
+        validate_xml_mapping: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping: true
+        # Entities live in Domain, so each subdomain needs an explicit mapping.
+        # Multi-field VOs mapped with #[ORM\Embeddable] need their ValueObject
+        # directory registered as its own entry, or Doctrine never sees them.
+        mappings:
+            User:
+                type: attribute
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Domain/User/Entity'
+                prefix: 'App\Domain\User\Entity'
+                alias: User
+            UserValueObject:
+                type: attribute
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Domain/User/ValueObject'
+                prefix: 'App\Domain\User\ValueObject'
+                alias: UserValueObject
+            # {{FILL: repeat the pair above for each additional subdomain}}
+
+# Each test run gets its own suffixed database, so a parallel or repeated run
+# never collides with the dev database.
+when@test:
+    doctrine:
+        dbal:
+            dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+
+when@prod:
+    doctrine:
+        orm:
+            query_cache_driver:
+                type: pool
+                pool: doctrine.system_cache_pool
+            result_cache_driver:
+                type: pool
+                pool: doctrine.result_cache_pool

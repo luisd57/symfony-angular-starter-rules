@@ -1,0 +1,20 @@
+# config/packages/lexik_jwt_authentication.yaml
+lexik_jwt_authentication:
+    secret_key: '%env(resolve:JWT_SECRET_KEY)%'
+    public_key: '%env(resolve:JWT_PUBLIC_KEY)%'
+    pass_phrase: '%env(JWT_PASSPHRASE)%'
+    token_ttl: '%env(int:JWT_TOKEN_TTL)%'
+
+    # Identify users by email rather than the default username claim.
+    user_id_claim: email
+
+    token_extractors:
+        # Single-session-per-browser model: one JWT cookie holds the active
+        # session's token. Logging in (either role) replaces it.
+        cookie:
+            enabled: true
+            name: "{{PROJECT}}_JWT"
+        authorization_header:
+            enabled: true
+            prefix: Bearer
+            name: Authorization

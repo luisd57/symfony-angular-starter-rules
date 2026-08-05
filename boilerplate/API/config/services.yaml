@@ -1,0 +1,73 @@
+# config/services.yaml
+#
+# Copy verbatim, then replace the {{...}} tokens and extend the {{FILL}} sections.
+# The blocks that are NOT {{FILL}} are what makes the shipped boilerplate work —
+# delete them and RateLimitSubscriber fails to autowire and the two JWT listeners
+# are silently never invoked.
+parameters:
+    app.frontend_url: '%env(APP_FRONTEND_URL)%'
+    app.jwt_cookie_secure: '%env(bool:JWT_COOKIE_SECURE)%'
+    # {{FILL: one parameter per domain TTL / tunable, e.g.
+    #   app.invitation_ttl: '%env(int:INVITATION_TOKEN_TTL)%'}}
+
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/Domain/'
+            - '../src/Application/*/DTO/'
+            # One line per subdomain holding Doctrine entities:
+            # - '../src/Infrastructure/Persistence/Doctrine/{{Subdomain}}/Entity/'
+            - '../src/Kernel.php'
+
+    # --- Required by the shipped boilerplate. Do not delete. ---
+
+    # RateLimitSubscriber takes two RateLimiterFactory arguments, which Symfony
+    # cannot autowire — they must be bound to the limiters declared in
+    # config/packages/rate_limiter.yaml.
+    App\Infrastructure\Http\EventSubscriber\RateLimitSubscriber:
+        arguments:
+            $apiLoginLimiter: '@limiter.api_login'
+            $apiPublicLimiter: '@limiter.api_public'
+
+    # These two listeners hook Lexik's JWT lifecycle. Without the tags they are
+    # constructed and never called — no error, just no custom claims and no
+    # blocklist check.
+    App\Infrastructure\Security\JwtCreatedListener:
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_created, method: onJWTCreated }
+
+    App\Infrastructure\Security\JwtDecodedListener:
+        tags:
+            - { name: kernel.event_listener, event: lexik_jwt_authentication.on_jwt_decoded, method: onJWTDecoded }
+
+    App\Infrastructure\Security\JwtCookieManager:
+        arguments:
+            $jwtTokenTtl: '%env(int:JWT_TOKEN_TTL)%'
+            $jwtCookieSecure: '%app.jwt_cookie_secure%'
+
+    # --- Ports -> adapters. Extend per domain. ---
+
+    App\Domain\User\Service\PasswordHasherInterface:
+        class: App\Infrastructure\Security\BcryptPasswordHasher
+
+    App\Domain\User\Service\TokenGeneratorInterface:
+        class: App\Infrastructure\Security\SecureTokenGenerator
+
+    App\Domain\User\Service\JwtTokenGeneratorInterface:
+        class: App\Infrastructure\Security\JwtTokenGenerator
+
+    App\Domain\User\Service\JwtBlocklistInterface:
+        class: App\Infrastructure\Security\RedisJwtBlocklist
+
+    App\Domain\User\Repository\UserRepositoryInterface:
+        class: App\Infrastructure\Persistence\Doctrine\User\Repository\DoctrineUserRepository
+
+    # {{FILL: one entry per remaining repository interface -> Doctrine implementation,
+    #  and one per domain service interface -> adapter. Mail senders take
+    #  $frontendUrl: '%app.frontend_url%'; handlers with tunables take them from the
+    #  parameters block above.}}
