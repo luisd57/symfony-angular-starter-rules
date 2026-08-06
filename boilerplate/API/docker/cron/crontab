@@ -1,0 +1,8 @@
+# One line per scheduled command. `>> /proc/1/fd/1 2>&1` sends output to the
+# container's stdout so `make cron-logs` shows it.
+#
+# {{FILL: replace the example below with this project's scheduled commands, and
+#  mirror them in the Makefile's cron-test target.}}
+#
+# */15 * * * * php /var/www/html/bin/console app:cleanup-expired --env=prod >> /proc/1/fd/1 2>&1
+# 0 2 * * *    php /var/www/html/bin/console app:cleanup-tokens --env=prod >> /proc/1/fd/1 2>&1

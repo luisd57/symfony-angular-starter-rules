@@ -1,0 +1,30 @@
+# CI override: supplies the env vars a developer's gitignored .env provides.
+# Layered on top of the base file:
+#   docker compose -f docker-compose.yml -f docker-compose.ci.yml ...
+#
+# APP_ENV=dev is deliberate, not a mistake: the when@dev rate-limiter relaxation
+# in config/packages/rate_limiter.yaml must apply, because the e2e suite drives
+# every login and public endpoint from a single runner IP and would otherwise
+# trip the production limits mid-run.
+#
+# Every value here is throwaway and CI-only. Never reuse one anywhere else.
+services:
+  php:
+    environment:
+      - APP_ENV=dev
+      - APP_SECRET=ci_secret_for_e2e_only
+      - DATABASE_URL=postgresql://{{project}}_user:ci_pass@postgres:5432/{{project}}_db?serverVersion=16&charset=utf8
+      # Must carry the password the redis container enforces.
+      - REDIS_URL=redis://:ci_redis_pass@redis:6379
+      # MailHog, because the e2e specs read invitation/reset tokens out of it.
+      - MAILER_DSN=smtp://mailhog:1025
+      - JWT_SECRET_KEY=%kernel.project_dir%/config/jwt/private.pem
+      - JWT_PUBLIC_KEY=%kernel.project_dir%/config/jwt/public.pem
+      - JWT_PASSPHRASE=ci_jwt_passphrase
+      - JWT_TOKEN_TTL=28800
+      - JWT_COOKIE_SECURE=false
+      - APP_FRONTEND_URL=http://localhost:4200
+      - DEFAULT_URI=http://localhost
+      - TRUSTED_PROXIES=127.0.0.1
+      - CORS_ALLOW_ORIGIN=^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$
+      # {{FILL: one line per domain env var the app reads}}
