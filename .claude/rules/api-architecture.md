@@ -60,7 +60,7 @@ Infrastructure → Application → Domain (never the reverse)
 3. Custom DBAL Type in `src/Infrastructure/Persistence/Doctrine/Type/`
 4. Register type in `config/packages/doctrine.yaml`
 5. Repository impl in `src/Infrastructure/Persistence/Doctrine/Repository/`
-6. Migration via `php bin/console doctrine:migrations:diff`
+6. Migration: review the `doctrine:migrations:diff` output before keeping it. Entities declare no relations, so Doctrine cannot see the hand-written FK constraints and indexes in `migrations/` and will propose dropping every one of them
 
 ### New API Endpoint
 1. Route method in controller in `src/Infrastructure/Http/Controller/Api/`

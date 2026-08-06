@@ -12,17 +12,23 @@ paths:
 - All components standalone — NO NgModules, no `.module.ts` files
 - Signal APIs: `input()`, `output()`, `model()` — NOT `@Input()`, `@Output()`
 - `inject()` function — NOT constructor injection
-- State: `signal()`, `computed()`, `linkedSignal()`, `resource()` / `httpResource()`
+- State: `signal()`, `computed()`, `linkedSignal()`
 - Control flow: `@if`, `@for`, `@switch` — NOT `*ngIf`, `*ngFor`, `*ngSwitch`
-- Zoneless by default — no Zone.js
+- Zoneless — declare `provideZonelessChangeDetection()` rather than relying on the version default
 - Functional providers in `app.config.ts`: `provideRouter()`, `provideHttpClient()`
 - Vitest for testing — NOT Karma/Jasmine
-- Signal Forms (`@angular/forms/signals`) for new forms
 - Prefer `[class]` / `[style]` bindings over `NgClass` / `NgStyle`
 
-Check what the project actually uses before applying the newest API — a codebase mid-migration
-(e.g. `rxResource` rather than `httpResource`) should stay internally consistent. Record the
-deviation in CLAUDE.md rather than mixing both.
+## Defaults, and when to change them
+
+Services return observables and unwrap the envelope per-service; forms are reactive
+(`FormBuilder` / `FormGroup`). These are the defaults because the shipped interceptor,
+`unwrap<T>()` and boilerplate all assume them.
+
+A resource API (`rxResource()` / `httpResource()`) or Signal Forms is a reasonable choice, but
+it is a decision to raise, not a silent default — adopting one halfway leaves the codebase
+running two conventions. Pick one per project, apply it throughout, and record it in CLAUDE.md
+under Deliberate Deviations.
 
 ## Style
 - Explicit types on every declaration/member/parameter (ESLint `typedef` + `explicit-function-return-type`, strictTypeChecked); `no-inferrable-types` stays OFF

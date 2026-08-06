@@ -37,9 +37,31 @@ Default layout (delete lines for apps not in this project):
 
 Everything runs dockerized — see `docker-compose.yml` and `Makefile`.
 
+## Deliberate Deviations (do not "fix")
+
+{{FILL: choices that look wrong but are intentional, each with its reason. An agent
+that doesn't know why will keep proposing the textbook alternative. Delete if none.}}
+
 ## Domain Terminology
 
 {{FILL: the domain terms a newcomer would misread — term then definition. Delete this section if the domain is self-evident.}}
+
+## API Response Envelope
+
+Emitted by `ApiResponseTrait`, consumed by each frontend service's `unwrap<T>()`.
+
+```json
+{"success": true, "data": {...}}
+{"success": false, "error": {"code": "...", "message": "..."}}
+{"success": true, "data": [...], "pagination": {"page": 1, "limit": 20, "total": 42, "total_pages": 3}}
+```
+
+Auth: JWT via httpOnly cookie (browser) or Bearer token (API clients). Dates: ISO-8601 throughout.
+
+## On-Demand Documentation
+
+Not loaded automatically. Reference with `@` when needed:
+{{FILL: e.g. `@API/docs/database-schema.md`, `@API/Product-Requirements.md`, the Postman collection}}
 
 ## Dev Environment
 
