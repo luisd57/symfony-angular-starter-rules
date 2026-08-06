@@ -65,3 +65,4 @@ paths:
 - Use `ApiResponseTrait` for consistent envelope format
 - Pagination: `?page=1&limit=20` (defaults: page=1, limit=20, max 100)
 - Wire format is snake_case, code is camelCase; mapping is manual in `toArray()` — no Serializer, no naming strategy
+- Encode with `JSON_PRESERVE_ZERO_FRACTION` (`ApiResponseTrait` does). Without it `json_encode` emits `80.0` as `80` and every float silently becomes an int on the wire

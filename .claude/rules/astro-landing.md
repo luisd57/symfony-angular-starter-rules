@@ -29,6 +29,7 @@ src/
 - PascalCase filenames, one component per file
 - `.astro` for static/server content; `.svelte` for interactive islands
 - API calls centralized in `services/`: exported async functions + one private `apiRequest<T>` that unwraps the envelope and throws a typed `ApiError(code, message, details)` (exported from `types/api.ts`); islands catch with `instanceof ApiError`. Base URL from `import.meta.env.PUBLIC_API_BASE_URL`.
+- Tailwind 3 keeps theming in `tailwind.config.mjs`; Tailwind 4 moved it into CSS (`@theme`) and ignores that file. Check which major is installed before editing theme config
 - Svelte 5 runes (`$props`/`$state`/`$derived`) with a local `interface Props` per island
 - Dates: display in user's local timezone, send in ISO-8601 UTC
 - Client-side validation + always handle server error responses gracefully

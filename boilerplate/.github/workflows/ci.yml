@@ -1,0 +1,209 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: "{{project}}_db"
+          POSTGRES_USER: "{{project}}_user"
+          POSTGRES_PASSWORD: ci_pass
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U {{project}}_user -d {{project}}_db"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    # Throwaway CI-only values. Never reuse one outside this workflow.
+    env:
+      APP_ENV: test
+      APP_SECRET: ci_secret_for_tests_only
+      DATABASE_URL: "postgresql://{{project}}_user:ci_pass@localhost:5432/{{project}}_db?serverVersion=16&charset=utf8"
+      REDIS_URL: "redis://localhost:6379"
+      MAILER_DSN: "null://null"
+      JWT_SECRET_KEY: "%kernel.project_dir%/config/jwt/private.pem"
+      JWT_PUBLIC_KEY: "%kernel.project_dir%/config/jwt/public.pem"
+      JWT_PASSPHRASE: ci_jwt_passphrase
+      JWT_TOKEN_TTL: 28800
+      JWT_COOKIE_SECURE: 'false'
+      APP_FRONTEND_URL: http://localhost:4200
+      DEFAULT_URI: http://localhost
+      TRUSTED_PROXIES: 127.0.0.1
+      CORS_ALLOW_ORIGIN: '^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
+      # {{FILL: one line per domain env var the app reads}}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: ctype, iconv, pdo_pgsql, intl
+          tools: composer:v2
+          coverage: none
+
+      - name: Cache composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.composer/cache
+            API/vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('API/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Create empty .env
+        # Symfony's Dotenv::bootEnv requires the file to exist even when every
+        # value comes from the environment.
+        working-directory: API
+        run: touch .env
+
+      - name: Install API dependencies
+        working-directory: API
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Generate JWT keypair
+        # Keys are gitignored, so CI must mint its own or the kernel cannot boot.
+        working-directory: API
+        run: php bin/console lexik:jwt:generate-keypair --skip-if-exists --no-interaction
+
+      - name: Create test database
+        working-directory: API
+        run: php bin/console doctrine:database:create --env=test --if-not-exists --no-interaction
+
+      - name: Run migrations on test database
+        working-directory: API
+        run: php bin/console doctrine:migrations:migrate --env=test --no-interaction --all-or-nothing
+
+      - name: Run PHPUnit
+        working-directory: API
+        run: vendor/bin/phpunit
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            app/package-lock.json
+            landing/package-lock.json
+
+      - name: Install app dependencies
+        working-directory: app
+        run: npm ci
+
+      - name: Lint app
+        working-directory: app
+        run: npm run lint
+
+      - name: Build app
+        working-directory: app
+        run: npm run build
+
+      # Delete these two steps if there is no landing site.
+      - name: Install landing dependencies
+        working-directory: landing
+        run: npm ci
+
+      - name: Build landing
+        working-directory: landing
+        run: npm run build
+
+  e2e:
+    name: e2e
+    runs-on: ubuntu-latest
+
+    env:
+      COMPOSE: docker compose -f docker-compose.yml -f docker-compose.ci.yml
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare host-mounted paths
+        # API/ is bind-mounted into the php container. .env must exist for
+        # Dotenv::bootEnv, and config/jwt is a host-owned directory the
+        # container's non-root symfony user has to write the keypair into.
+        run: |
+          touch API/.env
+          mkdir -p API/config/jwt
+          chmod 777 API/config/jwt
+
+      - name: Start core services
+        run: $COMPOSE up -d postgres redis nginx php mailhog app
+
+      - name: Fix named-volume ownership
+        # php_vendor and php_var mount empty and root-owned on a fresh runner,
+        # but the php container runs as symfony — chown so composer can write.
+        run: $COMPOSE exec -T --user root php chown -R symfony:symfony /var/www/html/vendor /var/www/html/var
+
+      - name: Install API dependencies
+        run: $COMPOSE exec -T php composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Generate JWT keypair
+        run: $COMPOSE exec -T php php bin/console lexik:jwt:generate-keypair --skip-if-exists --no-interaction
+
+      - name: Create database
+        run: $COMPOSE exec -T php php bin/console doctrine:database:create --if-not-exists --no-interaction
+
+      - name: Run migrations
+        run: $COMPOSE exec -T php php bin/console doctrine:migrations:migrate --no-interaction --all-or-nothing
+
+      - name: Seed
+        # {{FILL: create the admin account and any fixture data the suite needs,
+        #  e.g. php bin/console app:create-{{admin_role}} admin@example.com 'Name' 'Pass1!'}}
+        run: $COMPOSE exec -T php php bin/console list
+
+      - name: Run app e2e
+        run: $COMPOSE --profile e2e run --rm playwright
+
+      # Delete if there is no landing site.
+      - name: Run landing e2e
+        run: $COMPOSE --profile e2e run --rm playwright-landing
+
+      - name: Upload app report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-playwright-report
+          path: |
+            app/playwright-report
+            app/test-results
+          if-no-files-found: ignore
+
+      - name: Upload landing report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: landing-playwright-report
+          path: |
+            landing/playwright-report
+            landing/test-results
+          if-no-files-found: ignore
+
+      - name: Tear down
+        if: always()
+        run: $COMPOSE down -v

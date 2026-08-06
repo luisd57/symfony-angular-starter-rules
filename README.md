@@ -1,9 +1,10 @@
 # Reusable-Agentic-Kit
 
-A reusable starting point for agentic coding on a Symfony + Angular stack: conventions, a
-scaffold skill, and battle-tested boilerplate.
+A reusable starting point for agentic coding on a Symfony + Angular stack, distilled from a
+production project: conventions, a scaffold skill, and everything needed to actually bring a
+new project up — config, docker, CI and boilerplate, not descriptions of them.
 
-Copy `CLAUDE.md`, `.claude/` and `boilerplate/` into an empty project, fill the
+Copy `CLAUDE.md`, `.claude/`, `.mcp.json` and `boilerplate/` into an empty project, fill the
 `{{PLACEHOLDER}}` tokens, and run `/scaffold-project`.
 
 ## Stack
@@ -18,11 +19,14 @@ Copy `CLAUDE.md`, `.claude/` and `boilerplate/` into an empty project, fill the
 | Path | Purpose |
 |---|---|
 | `CLAUDE.md` | Project-manual template. Fill the tokens, delete what doesn't apply. |
-| `.claude/rules/` | Conventions. Stack rules are `paths:`-scoped so they load only for matching files; `documentation-style.md` and `git-conventions.md` are always on. |
-| `.claude/skills/scaffold-project/` | Ordered guide an agent follows to bootstrap a new project. Delete it once scaffolding is done. |
+| `.claude/rules/` | Conventions. Stack rules are `paths:`-scoped so they load only for matching files; `documentation-style.md`, `git-conventions.md` and `dev-gotchas.md` are always on. |
+| `.claude/skills/scaffold-project/` | Ordered guide an agent follows to bootstrap a new project, plus the copy manifest and token list. Delete it once scaffolding is done. |
 | `.claude/skills/done/` | `/done` — records a finished milestone in `docs/STATUS.md`. |
-| `.claude/settings.json` | Permission allowlist for the standard docker/make command surface. |
-| `boilerplate/` | Real infrastructure + test-harness files to copy, not reimplement. |
+| `.claude/settings.json`, `.mcp.json` | Permission allowlist and the Playwright MCP server. |
+| `boilerplate/` | The project itself, minus the domain: Symfony config, docker-compose, Makefile, Dockerfiles, nginx, CI workflow, frontend config, and the PHP that would otherwise be rewritten every time. |
+
+Every credential in `boilerplate/` is a `CHANGE_ME` placeholder. Generate real values per
+project; the JWT keypair is created by `make init` and is gitignored.
 
 ## Design notes
 

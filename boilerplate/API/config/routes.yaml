@@ -1,0 +1,7 @@
+# config/routes.yaml
+# Points at the hexagonal controller location rather than Symfony's default src/Controller/.
+controllers:
+    resource:
+        path: ../src/Infrastructure/Http/Controller/
+        namespace: App\Infrastructure\Http\Controller
+    type: attribute

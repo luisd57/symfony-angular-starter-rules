@@ -1,0 +1,24 @@
+# Local compose overrides and secrets
+/.env
+/.env.local
+
+# Node
+node_modules/
+dist/
+.angular/
+.astro/
+
+# Playwright
+playwright-report/
+test-results/
+.playwright/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Local docs (specs, plans, scratch). Track STATUS.md.
+docs/*
+!docs/STATUS.md

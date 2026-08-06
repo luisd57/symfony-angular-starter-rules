@@ -1,0 +1,68 @@
+# config/packages/security.yaml
+#
+# Firewall ORDER matters: Symfony uses the first pattern that matches. The two
+# single-route firewalls must come before the broad public one, or /auth/logout
+# and /auth/me fall into api_public and never authenticate.
+security:
+    password_hashers:
+        Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Domain\User\Entity\User
+                property: email
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        # Logout requires authentication
+        api_logout:
+            pattern: ^/api/auth/logout
+            stateless: true
+            jwt: ~
+
+        # Auth state check requires authentication
+        api_auth_me:
+            pattern: ^/api/auth/me$
+            stateless: true
+            jwt: ~
+
+        # Public endpoints (no auth required)
+        # {{FILL: add each publicly readable resource prefix to this pattern}}
+        api_public:
+            pattern: ^/api($|/$|/health|/auth)
+            stateless: true
+            security: false
+
+        # Everything else under /api
+        api:
+            pattern: ^/api
+            stateless: true
+            jwt: ~
+
+    # Ordered most-specific first; the trailing catch-all makes authentication
+    # the default, so a new route is protected unless deliberately opened above.
+    access_control:
+        - { path: ^/api/health, roles: PUBLIC_ACCESS }
+        - { path: ^/api/$, roles: PUBLIC_ACCESS }
+        - { path: ^/api/auth/logout, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/auth/me$, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api/auth, roles: PUBLIC_ACCESS }
+        # {{FILL: public domain endpoints, e.g.
+        #   - { path: ^/api/<resource>(/|$), roles: PUBLIC_ACCESS }}}
+
+        - { path: "^/api/{{admin_role_path}}", roles: "{{ADMIN_ROLE}}" }
+        - { path: "^/api/{{user_role_path}}", roles: "{{USER_ROLE}}" }
+        - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
+
+# Bcrypt at production cost dominates the test suite runtime; 4 is the minimum
+# accepted cost and keeps hashing honest without the wait.
+when@test:
+    security:
+        password_hashers:
+            Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
+                algorithm: auto
+                cost: 4
