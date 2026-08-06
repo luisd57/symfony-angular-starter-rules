@@ -18,10 +18,9 @@ services:
     App\:
         resource: '../src/'
         exclude:
+            # Domain is pure — entities and VOs are never services.
             - '../src/Domain/'
             - '../src/Application/*/DTO/'
-            # One line per subdomain holding Doctrine entities:
-            # - '../src/Infrastructure/Persistence/Doctrine/{{Subdomain}}/Entity/'
             - '../src/Kernel.php'
 
     # --- Required by the shipped boilerplate. Do not delete. ---

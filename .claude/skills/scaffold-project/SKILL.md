@@ -34,48 +34,47 @@ listed in `references/tokens.md`.
 
 ## 2. API (Symfony, hexagonal)
 
-1. Copy `boilerplate/API/docker/` and run `make build up`, then `make init`. That script
-   creates the Symfony skeleton, installs the packages, and **generates the JWT keypair** —
-   nothing else does, and auth cannot boot without it. It reads `JWT_PASSPHRASE`, so write
-   `API/.env` first (from `boilerplate/API/.env.example`) with generated values for
-   `APP_SECRET` and `JWT_PASSPHRASE`.
-2. Copy `boilerplate/API/config/`, `phpunit.xml.dist`, `.env.test` and `.gitignore` over the
-   generated ones. `config/services.yaml` and `config/packages/rate_limiter.yaml` are what
-   make the shipped boilerplate work — see `references/boilerplate.md`.
+1. Copy the whole of `boilerplate/API/` into `API/`. It is a working Symfony project:
+   `composer.json` (pinned), all of `config/`, `src/` with the auth slice, `tests/`,
+   `migrations/`, `phpunit.xml.dist`, `.env.example`, `.env.test`, `.gitignore`, `docker/`.
+2. Write `API/.env` from `.env.example`, generating real values for `APP_SECRET` and
+   `JWT_PASSPHRASE`. Never keep a `CHANGE_ME`.
+3. `make build up`, then `make init` — that runs `composer install` and **generates the JWT
+   keypair**, which nothing else does and without which auth cannot boot.
 
-   **Order matters.** `composer create-project` and flex recipes overwrite
-   `config/services.yaml`, so copying the config before step 1 silently loses it. The symptom
-   appears much later as "Cannot autowire RateLimitSubscriber… `$apiLoginLimiter`", i.e. the
-   exact failure the file exists to prevent. Copy after init, and re-check
-   `grep apiLoginLimiter config/services.yaml` if composer runs again.
-
-   Also delete the `compose.yaml` / `compose.override.yaml` the Docker flex recipe drops into
-   `API/` — they conflict with the root `docker-compose.yml`.
-3. Create the layer skeleton per `api-architecture.md`: `src/Domain/`, `src/Application/`,
-   `src/Infrastructure/`, with per-subdomain folders from the requirements doc.
-4. Copy `boilerplate/API/src/` and `boilerplate/API/tests/`. Do not reimplement them.
-   Extend `ApiTestCase` / `DomainTestHelper` for this project's roles and entities.
-5. Add the CLI command `app:create-{{admin_role}}` for privileged account creation.
-6. First vertical slice: User entity + VOs (UserId, Email, Role) + login/logout/me, fully
-   tested. This exercises every layer and every piece of config above before domain work
-   starts. `make db-create db-migrate`, then `make test-db-setup`, then `make test`.
+   Because `composer.json` is shipped, `composer create-project` never runs and flex never
+   regenerates `config/services.yaml`. If you deviate and run create-project anyway, re-check
+   `grep apiLoginLimiter config/services.yaml` afterwards.
+4. `make db-create db-migrate`, then `make test-db-setup`.
+5. Replace the tokens (`references/tokens.md`), then extend rather than rewrite: add the
+   project's subdomains under `src/Domain/`, register their Doctrine mappings and VO types in
+   `doctrine.yaml`, and bind their repository interfaces in `services.yaml`. Extend
+   `ApiTestCase` / `DomainTestHelper` for the new roles and entities.
+6. Verify the shipped slice before writing any domain code: `app:create-{{admin_role}}`, then
+   `make test`, then log in with `curl` (step 6 below). If that works, every layer and every
+   piece of config is proven.
 
 ## 3. Angular app (`app/`)
 
-1. `ng new` (current stable): standalone, no Zone.js, SCSS, routing.
-2. Copy `boilerplate/app/` over the generated config: `angular.json`, `proxy.conf.json`,
-   `tsconfig*.json`, `eslint.config.js`, `.prettierrc`, `.editorconfig`,
-   `playwright.config.ts`. The `angular.json` already wires `serve.options.proxyConfig` —
-   creating `proxy.conf.json` alone does nothing, and no test catches the omission because
-   Vitest mocks HTTP.
-3. Structure per `angular.md`; API conventions per `angular-apis.md`.
-4. Write `e2e/global-setup.ts` per the notes in `playwright.config.ts`.
+1. Copy the whole of `boilerplate/app/` into `app/`: `package.json`, `angular.json` (already
+   wires `serve.options.proxyConfig` — creating `proxy.conf.json` alone does nothing, and no
+   test catches the omission because Vitest mocks HTTP), the tsconfigs, `eslint.config.js`,
+   `playwright.config.ts`, `e2e/`, and `src/` with the auth slice — `ApiResponse` +
+   `unwrap` helpers, interceptor, guard, `AuthService`.
+2. `ng new` is only needed for the pieces the kit does not ship (`main.ts`, `index.html`,
+   `styles.scss`, `app.routes.ts`, the login page). Generate them into place rather than
+   scaffolding over the copied config.
+3. Fill the `{{FILL}}` markers in `auth.service.ts` (post-login route) and
+   `e2e/global-setup.ts` (login form selectors, post-login URL).
+4. Structure per `angular.md`; API conventions per `angular-apis.md`.
 
 ## 4. Landing (`landing/`)
 
-1. `npm create astro@latest` + Tailwind. Add the Svelte integration only when an interactive
-   island is actually needed.
-2. Copy `boilerplate/landing/`. Structure per `astro-landing.md`.
+1. Copy `boilerplate/landing/` — `package.json`, `astro.config.mjs`, `tailwind.config.mjs`,
+   `tsconfig.json`, `playwright.config.ts`, `e2e/`, `src/{services,types}`, `.env.example`.
+2. `npm create astro@latest` for the pages/layouts the kit does not ship. Add the Svelte
+   integration only when an interactive island is actually needed.
+3. Structure per `astro-landing.md`.
 
 ## 5. CI
 

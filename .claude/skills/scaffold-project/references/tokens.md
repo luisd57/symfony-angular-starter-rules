@@ -12,7 +12,6 @@ build failure, not a cosmetic issue.
 | `{{ADMIN_ROLE}}` / `{{admin_role}}` | privileged Symfony role / its lowercase form for the CLI command | `ROLE_LIBRARIAN` / `librarian` |
 | `{{USER_ROLE}}` | regular authenticated role | `ROLE_MEMBER` |
 | `{{admin_role_path}}` / `{{user_role_path}}` | route prefixes those roles guard in `security.yaml` | `librarian` / `member` |
-| `{{Subdomain}}` | a bounded context name, in the doctrine/services exclude lists | `Catalog` |
 
 `{{FILL: ...}}` (referred to as `{{FILL}}` in prose) marks a section the domain must supply
 rather than a find-and-replace. Leaving one in place is fine only if the section genuinely

@@ -1,0 +1,49 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Infrastructure\Http\Controller\Api;
+
+use App\Infrastructure\Http\Controller\ApiResponseTrait;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\Attribute\Route;
+
+#[Route('/api')]
+final class HealthController extends AbstractController
+{
+    use ApiResponseTrait;
+
+    #[Route('/health', name: 'api_health', methods: ['GET'])]
+    public function health(EntityManagerInterface $entityManager): JsonResponse
+    {
+        $databaseOk = false;
+
+        try {
+            $entityManager->getConnection()->executeQuery('SELECT 1');
+            $databaseOk = true;
+        } catch (\Exception) {
+            // Database unreachable — reported as unhealthy below.
+        }
+
+        // Deliberately bypasses the response envelope: probes and load balancers
+        // expect a flat body and read the status code.
+        return new JsonResponse([
+            'status' => $databaseOk ? 'healthy' : 'unhealthy',
+            'timestamp' => (new \DateTimeImmutable())->format(\DateTimeInterface::ATOM),
+        ], $databaseOk ? 200 : 503);
+    }
+
+    #[Route('/', name: 'api_index', methods: ['GET'])]
+    public function index(): JsonResponse
+    {
+        return $this->success([
+            'name' => '{{PROJECT_NAME}} API',
+            'endpoints' => [
+                'health' => '/api/health',
+                'auth' => '/api/auth/*',
+            ],
+        ]);
+    }
+}
