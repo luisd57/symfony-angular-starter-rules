@@ -14,6 +14,8 @@ Append project-specific entries; delete any section the project doesn't use.
 - `vendor/` and `var/` must exist in the image before the `chown`, or Docker initialises those named volumes root-owned and `composer install` fails with "vendor/symfony does not exist and could not be created". Both Dockerfiles `mkdir -p` them first.
 - On a fresh CI runner the named volumes mount empty and root-owned; `chown -R symfony:symfony` them before the first composer run.
 - Symfony's `Dotenv::bootEnv` requires `API/.env` to exist even when every value comes from the environment. CI `touch`es it.
+- `composer create-project` and flex recipes overwrite `config/services.yaml`. If a composer run follows a config copy, the hand-written bindings are gone and the next container compile fails on `RateLimitSubscriber`'s `$apiLoginLimiter`. Re-check after any recipe runs.
+- In Git Bash, `docker compose exec` mangles container paths into Windows ones (`bash: C:/Program Files/Git/var/www/...`). Prefix with `MSYS_NO_PATHCONV=1` and use a leading `//`.
 - `config/jwt` is host-owned when bind-mounted; make it writable before the container's non-root user generates the keypair.
 
 ## Timezone

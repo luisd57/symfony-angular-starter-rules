@@ -19,16 +19,22 @@ paths:
 - Vitest for testing — NOT Karma/Jasmine
 - Prefer `[class]` / `[style]` bindings over `NgClass` / `NgStyle`
 
-## Defaults, and when to change them
+## Signals are the default for state. Two separate questions are not.
 
-Services return observables and unwrap the envelope per-service; forms are reactive
-(`FormBuilder` / `FormGroup`). These are the defaults because the shipped interceptor,
-`unwrap<T>()` and boilerplate all assume them.
+Component and service state is signals — `signal()`, `computed()`, `WritableSignal`, with
+`inject()` throughout. That is not in question and never needs raising.
 
-A resource API (`rxResource()` / `httpResource()`) or Signal Forms is a reasonable choice, but
-it is a decision to raise, not a silent default — adopting one halfway leaves the codebase
-running two conventions. Pick one per project, apply it throughout, and record it in CLAUDE.md
-under Deliberate Deviations.
+Two narrower choices sit on top of that, and each is a per-project decision:
+
+- **Data fetching.** Services returning `Observable<T>` with a per-service `unwrap<T>()` is the
+  default, because the shipped interceptor and boilerplate assume it. `rxResource()` /
+  `httpResource()` wrap the same call in a signal and are a fine choice — just make it
+  deliberately, since the two styles read very differently at the call site.
+- **Forms.** Reactive (`FormBuilder` / `FormGroup`) is the default. Signal Forms
+  (`@angular/forms/signals`) is a fine choice, made once.
+
+Pick one of each per project and apply it throughout; a codebase running both is the failure
+mode. Record whichever you pick in CLAUDE.md under Deliberate Deviations.
 
 ## Style
 - Explicit types on every declaration/member/parameter (ESLint `typedef` + `explicit-function-return-type`, strictTypeChecked); `no-inferrable-types` stays OFF

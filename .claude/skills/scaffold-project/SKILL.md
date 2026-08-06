@@ -42,6 +42,15 @@ listed in `references/tokens.md`.
 2. Copy `boilerplate/API/config/`, `phpunit.xml.dist`, `.env.test` and `.gitignore` over the
    generated ones. `config/services.yaml` and `config/packages/rate_limiter.yaml` are what
    make the shipped boilerplate work — see `references/boilerplate.md`.
+
+   **Order matters.** `composer create-project` and flex recipes overwrite
+   `config/services.yaml`, so copying the config before step 1 silently loses it. The symptom
+   appears much later as "Cannot autowire RateLimitSubscriber… `$apiLoginLimiter`", i.e. the
+   exact failure the file exists to prevent. Copy after init, and re-check
+   `grep apiLoginLimiter config/services.yaml` if composer runs again.
+
+   Also delete the `compose.yaml` / `compose.override.yaml` the Docker flex recipe drops into
+   `API/` — they conflict with the root `docker-compose.yml`.
 3. Create the layer skeleton per `api-architecture.md`: `src/Domain/`, `src/Application/`,
    `src/Infrastructure/`, with per-subdomain folders from the requirements doc.
 4. Copy `boilerplate/API/src/` and `boilerplate/API/tests/`. Do not reimplement them.
