@@ -55,11 +55,16 @@ final class RateLimitSubscriber implements EventSubscriberInterface
 
     private function resolveLimiter(string $route, string $clientIp): ?\Symfony\Component\RateLimiter\LimiterInterface
     {
-        // {{FILL: list every login route and every unauthenticated write route of this project}}
+        // Matched by route NAME, so renaming a route silently drops its limit.
+        // These names must stay in step with the #[Route(name: ...)] attributes.
+        //
+        // {{FILL: add every additional login route and every unauthenticated
+        //  write route this project exposes.}}
         return match ($route) {
-            'api_login' => $this->apiLoginLimiter->create($clientIp),
-            'api_forgot_password', 'api_register',
-            'api_reset_password' => $this->apiPublicLimiter->create($clientIp),
+            'api_auth_login' => $this->apiLoginLimiter->create($clientIp),
+            'api_auth_forgot_password',
+            'api_auth_register',
+            'api_auth_reset_password' => $this->apiPublicLimiter->create($clientIp),
             default => null,
         };
     }

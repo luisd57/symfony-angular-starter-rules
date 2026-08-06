@@ -21,13 +21,20 @@ trait ApiResponseTrait
 
     protected function success(mixed $data = null, int $status = 200): JsonResponse
     {
-        return $this->json([
+        return $this->envelope([
             'success' => true,
             'data' => $data,
         ], $status);
     }
 
-    private function json(array $payload, int $status): JsonResponse
+    /**
+     * Named `envelope`, not `json`: a trait method cannot reduce the visibility
+     * of an inherited one, and AbstractController::json() is protected — a
+     * private json() here is a fatal compile error in every controller.
+     *
+     * @param array<string, mixed> $payload
+     */
+    private function envelope(array $payload, int $status): JsonResponse
     {
         $response = new JsonResponse(null, $status);
         $response->setEncodingOptions(self::ENCODING_OPTIONS);
@@ -48,7 +55,7 @@ trait ApiResponseTrait
 
     protected function error(string $message, string $code, int $status = 400): JsonResponse
     {
-        return $this->json([
+        return $this->envelope([
             'success' => false,
             'error' => [
                 'code' => $code,
@@ -59,7 +66,7 @@ trait ApiResponseTrait
 
     protected function validationError(array $errors): JsonResponse
     {
-        return $this->json([
+        return $this->envelope([
             'success' => false,
             'error' => [
                 'code' => 'VALIDATION_ERROR',
