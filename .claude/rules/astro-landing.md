@@ -7,16 +7,16 @@ paths:
 # Public Site Conventions (Astro + Svelte)
 
 ## Tech Stack
-- Astro (Islands Architecture — static HTML with selective client hydration)
-- Svelte (interactive island components — add only if interactivity is needed)
+- Astro (Islands Architecture - static HTML with selective client hydration)
+- Svelte (interactive island components - add only if interactivity is needed)
 - Tailwind CSS
 
 ## Project Structure
 ```
 src/
 ├── components/
-│   ├── astro/         # Server-rendered (.astro) — layout, static content
-│   └── svelte/        # Client-hydrated (.svelte) — interactive flows
+│   ├── astro/         # Server-rendered (.astro) - layout, static content
+│   └── svelte/        # Client-hydrated (.svelte) - interactive flows
 ├── content/           # Content Collections (markdown)
 ├── layouts/           # Astro layout templates
 ├── pages/             # Astro page routes
