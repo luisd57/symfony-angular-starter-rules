@@ -35,9 +35,9 @@ feature  →  data-access  →  utils
 
 ## Choosing Domains
 
-Cut domains by DATA OWNERSHIP (a bounded context that owns its entities), not by page — page-shaped domains over shared entities force every service into `shared/`, since the no-cross-domain-imports rule leaves nowhere else to put them.
+Cut domains by DATA OWNERSHIP (a bounded context that owns its entities), not by page - page-shaped domains over shared entities force every service into `shared/`, since the no-cross-domain-imports rule leaves nowhere else to put them.
 
-Smell test: if most `*.service.ts` end up in `shared/data-access/`, the domains are pages and the layout is a `services/` folder wearing a costume. Re-cut around the entities, or consciously accept a shared entity-service layer — fine for small apps, but record it in CLAUDE.md as deliberate so it doesn't get "fixed" later.
+Smell test: if most `*.service.ts` end up in `shared/data-access/`, the domains are pages and the layout is a `services/` folder wearing a costume. Re-cut around the entities, or consciously accept a shared entity-service layer - fine for small apps, but record it in CLAUDE.md as deliberate so it doesn't get "fixed" later.
 
 ## Growing Domains
 - Nesting is for routes (`:id/detail`), NOT folders. All pages are siblings under `feature/`.
@@ -61,7 +61,7 @@ Kebab-case for all files/folders. One component/service/store per file. No `inde
 - Standalone, no NgModules
 - Inject services/stores via `inject()`
 - Pass data to dumb components via signal `input()`, receive events via `output()`
-- Minimal template logic — delegate display to `ui/` components
+- Minimal template logic - delegate display to `ui/` components
 
 ## Dumb Components (ui/)
 - Standalone, receive data via signal `input()`, emit via `output()`
@@ -69,12 +69,12 @@ Kebab-case for all files/folders. One component/service/store per file. No `inde
 
 ## Shell Routes
 - Every domain with multiple routes has a `<domain>-shell.routes.ts` in `feature/`
-- Contains ONLY route definitions — no components, no services
+- Contains ONLY route definitions - no components, no services
 - Use `loadComponent` for individual pages, `loadChildren` for domain route sets
 
 ## Data-Access
 - Services: HTTP/API interaction (`<domain>.service.ts`)
-- Stores (`<domain>.store.ts`) are OPTIONAL — most domains need only a service. Add a store only for state shared across pages. Don't scaffold one by default.
+- Stores (`<domain>.store.ts`) are OPTIONAL - most domains need only a service. Add a store only for state shared across pages. Don't scaffold one by default.
 - Only smart components (feature/) may inject from data-access/
 - Interceptor does exactly two things: `withCredentials` + 401 → logout. Envelope unwrapping is a per-service `unwrap<T>()`; `ApiResponse<T>` lives in `shared/utils/api-response.model.ts`.
-- Consume API snake_case field names as-is — no camelCase mapping layer
+- Consume API snake_case field names as-is - no camelCase mapping layer
