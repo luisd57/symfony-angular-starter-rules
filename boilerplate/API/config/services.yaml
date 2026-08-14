@@ -1,7 +1,7 @@
 # config/services.yaml
 #
 # Copy verbatim, then replace the {{...}} tokens and extend the {{FILL}} sections.
-# The blocks that are NOT {{FILL}} are what makes the shipped boilerplate work —
+# The blocks that are NOT {{FILL}} are what makes the shipped boilerplate work -
 # delete them and RateLimitSubscriber fails to autowire and the two JWT listeners
 # are silently never invoked.
 parameters:
@@ -18,7 +18,7 @@ services:
     App\:
         resource: '../src/'
         exclude:
-            # Domain is pure — entities and VOs are never services.
+            # Domain is pure - entities and VOs are never services.
             - '../src/Domain/'
             - '../src/Application/*/DTO/'
             - '../src/Kernel.php'
@@ -26,7 +26,7 @@ services:
     # --- Required by the shipped boilerplate. Do not delete. ---
 
     # RateLimitSubscriber takes two RateLimiterFactory arguments, which Symfony
-    # cannot autowire — they must be bound to the limiters declared in
+    # cannot autowire - they must be bound to the limiters declared in
     # config/packages/rate_limiter.yaml.
     App\Infrastructure\Http\EventSubscriber\RateLimitSubscriber:
         arguments:
@@ -34,7 +34,7 @@ services:
             $apiPublicLimiter: '@limiter.api_public'
 
     # These two listeners hook Lexik's JWT lifecycle. Without the tags they are
-    # constructed and never called — no error, just no custom claims and no
+    # constructed and never called - no error, just no custom claims and no
     # blocklist check.
     App\Infrastructure\Security\JwtCreatedListener:
         tags:

@@ -18,5 +18,5 @@ export function uniqueEmail(prefix: string): string {
   return `${prefix}+${Date.now()}-${Math.random().toString(36).slice(2, 7)}@e2e.test`;
 }
 
-// {{FILL: add per-domain helpers here — page objects, seeding shortcuts,
+// {{FILL: add per-domain helpers here - page objects, seeding shortcuts,
 //  MailHog message readers.}}

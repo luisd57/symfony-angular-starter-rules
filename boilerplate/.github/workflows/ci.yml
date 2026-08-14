@@ -157,7 +157,7 @@ jobs:
 
       - name: Fix named-volume ownership
         # php_vendor and php_var mount empty and root-owned on a fresh runner,
-        # but the php container runs as symfony — chown so composer can write.
+        # but the php container runs as symfony - chown so composer can write.
         run: $COMPOSE exec -T --user root php chown -R symfony:symfony /var/www/html/vendor /var/www/html/var
 
       - name: Install API dependencies

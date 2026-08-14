@@ -15,7 +15,7 @@ help:
 	@echo "  make sf c='...'       - Run a Symfony console command"
 	@echo "  make db-create        - Create the database"
 	@echo "  make db-migrate       - Run migrations"
-	@echo "  make db-diff          - Diff entities into a migration (REVIEW IT — see dev-gotchas)"
+	@echo "  make db-diff          - Diff entities into a migration (REVIEW IT - see dev-gotchas)"
 	@echo "  make cache-clear      - Clear the Symfony cache"
 	@echo "  make test             - Run the full PHPUnit suite"
 	@echo "  make test-unit        - Unit suite only (no DB)"

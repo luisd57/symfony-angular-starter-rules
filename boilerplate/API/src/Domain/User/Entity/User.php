@@ -14,10 +14,10 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
- * Never `final` — Doctrine proxies it.
+ * Never `final` - Doctrine proxies it.
  * Never reads the clock: every factory and mutator takes an explicit $now.
  *
- * {{FILL: add this project's profile fields (phone, address, avatar…) as
+ * {{FILL: add this project's profile fields (phone, address, avatar...) as
  *  properties with their own mutators. Multi-field VOs use #[ORM\Embedded] and
  *  need their ValueObject directory registered in doctrine.yaml.}}
  */

@@ -16,7 +16,7 @@ use App\Domain\User\ValueObject\Email;
 use Symfony\Component\Clock\ClockInterface;
 
 /**
- * Privileged account creation. Reached only from the CLI — there is deliberately
+ * Privileged account creation. Reached only from the CLI - there is deliberately
  * no HTTP endpoint for it.
  */
 final readonly class CreateAdminHandler

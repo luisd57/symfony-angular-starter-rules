@@ -29,7 +29,7 @@ WORKDIR /var/www/html
 
 # vendor/ and var/ MUST exist in the image before the chown. Docker initialises a
 # named volume whose path is absent from the image as root:root, and the non-root
-# user then cannot write to it — composer install fails with
+# user then cannot write to it - composer install fails with
 # "vendor/symfony does not exist and could not be created".
 RUN mkdir -p /var/www/html/vendor /var/www/html/var \
     && useradd -ms /bin/bash symfony \

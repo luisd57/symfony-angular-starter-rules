@@ -9,7 +9,7 @@ const POLL_INTERVAL_MS: number = 2_000;
 export default async function globalSetup(): Promise<void> {
   // 1. Wait for the Angular dev server to finish compiling. `depends_on: app`
   //    in compose waits for the CONTAINER to start, not for the dev server to
-  //    listen — first compile is ~10s and the suite would race it.
+  //    listen - first compile is ~10s and the suite would race it.
   await waitForUrl(APP_URL, 'app');
 
   // 2. Wait for MailHog (usually instant, but defensive).

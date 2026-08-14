@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Domain\User\Enum;
 
 /**
- * {{FILL: rename the cases to this project's roles. Two is the starting shape —
- *  a privileged role and a regular one — but any number works.}}
+ * {{FILL: rename the cases to this project's roles. Two is the starting shape -
+ *  a privileged role and a regular one - but any number works.}}
  */
 enum UserRole: string
 {

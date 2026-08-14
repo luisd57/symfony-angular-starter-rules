@@ -3,7 +3,7 @@ export interface LoginRequest {
   password: string;
 }
 
-/** Mirrors UserOutputDTO — snake_case, consumed as-is. */
+/** Mirrors UserOutputDTO - snake_case, consumed as-is. */
 export interface AuthUser {
   id: string;
   email: string;
@@ -15,5 +15,5 @@ export interface LoginData {
   user: AuthUser;
 }
 
-// {{FILL: request/response shapes for whatever onboarding this project adds —
+// {{FILL: request/response shapes for whatever onboarding this project adds -
 //  registration, invitations, password reset.}}

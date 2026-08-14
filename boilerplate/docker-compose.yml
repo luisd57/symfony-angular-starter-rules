@@ -1,7 +1,7 @@
-# Replace {{project}} throughout. Secrets default to CHANGE_ME — override them in a
+# Replace {{project}} throughout. Secrets default to CHANGE_ME - override them in a
 # local .env next to this file (gitignored).
 #
-# No top-level `version:` key — Compose v2 ignores it and warns.
+# No top-level `version:` key - Compose v2 ignores it and warns.
 #
 # The network is called `backend`, not `<project>_backend`: Compose already prefixes
 # network and volume names with the project name, so prefixing again yields
@@ -18,7 +18,7 @@ services:
       - ./API/docker/php/php.ini:/usr/local/etc/php/conf.d/custom.ini
       # Named volumes keep container-owned vendor/ and var/ off the host bind
       # mount. Consequence: vendor/ never appears on the host, so the editor
-      # cannot resolve Symfony symbols. Expected — see dev-gotchas.md.
+      # cannot resolve Symfony symbols. Expected - see dev-gotchas.md.
       - php_vendor:/var/www/html/vendor
       - php_var:/var/www/html/var
     depends_on:
@@ -141,7 +141,7 @@ services:
       - backend
 
   playwright:
-    # Pin to the same minor as app/package.json @playwright/test — a mismatch
+    # Pin to the same minor as app/package.json @playwright/test - a mismatch
     # between the client and the browsers baked into the image fails at runtime.
     # Browsers are preinstalled; no separate `playwright install` needed.
     # One-shot runner, not started by `up`:
@@ -169,7 +169,7 @@ services:
 
   playwright-report:
     # Serves app/playwright-report/ over HTTP. The trace viewer runs on a Service
-    # Worker, which does not work over file:// — opening the report directly
+    # Worker, which does not work over file:// - opening the report directly
     # gives a blank trace.
     #   docker compose --profile e2e up playwright-report   → http://localhost:9323
     image: mcr.microsoft.com/playwright:v1.49.1-noble
@@ -188,7 +188,7 @@ services:
     # Self-contained: starts its OWN Astro dev server via Playwright's webServer,
     # bound to 127.0.0.1 so the page origin satisfies the API's loopback CORS
     # rule. PUBLIC_API_BASE_URL is overridden to reach nginx on the compose
-    # network — the landing/.env default (localhost:8080) is unreachable from
+    # network - the landing/.env default (localhost:8080) is unreachable from
     # inside this container.
     #   docker compose --profile e2e run --rm playwright-landing
     image: mcr.microsoft.com/playwright:v1.49.1-noble

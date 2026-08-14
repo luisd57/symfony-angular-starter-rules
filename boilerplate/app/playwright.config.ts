@@ -31,7 +31,7 @@ export default defineConfig({
     // with storageState: undefined.
     storageState: ADMIN_STORAGE_STATE,
     // Always on, so a green run is still replayable in the trace viewer.
-    // Serve the report over HTTP (the playwright-report compose service) —
+    // Serve the report over HTTP (the playwright-report compose service) -
     // the viewer uses a Service Worker and shows nothing over file://.
     trace: 'on',
     screenshot: 'only-on-failure',

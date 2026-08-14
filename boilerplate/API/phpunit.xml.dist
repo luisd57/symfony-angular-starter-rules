@@ -18,7 +18,7 @@
     </php>
 
     <!-- Two suites only. Controller/HTTP tests belong under Integration,
-         mirroring src/ path-for-path — see .claude/rules/api-testing.md -->
+         mirroring src/ path-for-path - see .claude/rules/api-testing.md -->
     <testsuites>
         <testsuite name="Unit">
             <directory>tests/Unit</directory>

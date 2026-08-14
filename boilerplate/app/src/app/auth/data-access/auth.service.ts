@@ -11,7 +11,7 @@ import { AuthUser, LoginData, LoginRequest } from '../utils/auth.model';
  *
  * The user is mirrored into localStorage because `authGuard` runs synchronously
  * on navigation, before `/auth/me` can return. Drop the mirror and every
- * protected route bounces to /login on a fresh page load — and the e2e
+ * protected route bounces to /login on a fresh page load - and the e2e
  * storageState stops working.
  */
 const USER_KEY: string = 'auth_user';
