@@ -16,7 +16,7 @@ use App\Domain\User\ValueObject\Email;
 
 /**
  * Role-agnostic login. If the project needs per-role entry points, branch in the
- * controller and pass the expected UserRole in — don't duplicate this handler.
+ * controller and pass the expected UserRole in - don't duplicate this handler.
  */
 final readonly class LoginHandler
 {

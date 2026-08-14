@@ -8,7 +8,7 @@ const POLL_INTERVAL_MS: number = 2_000;
  * Waits for the API to answer before the specs run.
  *
  * {{FILL: add a fail-fast pre-check for whatever data the landing specs need
- *  (seeded content, availability…). Without one, a missing fixture surfaces
+ *  (seeded content, availability...). Without one, a missing fixture surfaces
  *  deep in a flow as a confusing "nothing to click" failure instead of a clear
  *  "seed this first" message.}}
  */

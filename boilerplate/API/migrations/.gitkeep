@@ -1,2 +1,2 @@
-# Ignore everything except the migrations themselves is NOT wanted here —
+# Ignore everything except the migrations themselves is NOT wanted here -
 # migrations are tracked. This file exists so the directory survives a fresh clone.

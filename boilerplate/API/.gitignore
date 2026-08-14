@@ -22,5 +22,5 @@
 /.env
 /.env.dev
 
-# pgAdmin credential file — ship the template, never the filled one.
+# pgAdmin credential file - ship the template, never the filled one.
 /docker/pgadmin/pgpassfile

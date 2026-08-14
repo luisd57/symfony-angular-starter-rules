@@ -5,7 +5,7 @@ const API_BASE: string = import.meta.env.PUBLIC_API_BASE_URL ?? 'http://localhos
 
 /**
  * Single place the response envelope is unwrapped. Every exported call below
- * goes through it, so callers see either data or an ApiError — never the
+ * goes through it, so callers see either data or an ApiError - never the
  * envelope itself.
  */
 async function apiRequest<T>(path: string, options?: RequestInit): Promise<T> {

@@ -6,5 +6,5 @@ export function uniqueEmail(prefix: string): string {
 
 // {{FILL: page objects and locators for the landing flows.
 //  Note for Astro islands: a `client:visible` island below the fold does not
-//  hydrate (and does not fetch) until scrolled into view — helpers that touch
+//  hydrate (and does not fetch) until scrolled into view - helpers that touch
 //  one must scroll it in first.}}

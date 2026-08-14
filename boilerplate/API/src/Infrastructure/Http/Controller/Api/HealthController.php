@@ -24,7 +24,7 @@ final class HealthController extends AbstractController
             $entityManager->getConnection()->executeQuery('SELECT 1');
             $databaseOk = true;
         } catch (\Exception) {
-            // Database unreachable — reported as unhealthy below.
+            // Database unreachable - reported as unhealthy below.
         }
 
         // Deliberately bypasses the response envelope: probes and load balancers

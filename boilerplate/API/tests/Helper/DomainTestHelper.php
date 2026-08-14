@@ -15,7 +15,7 @@ use DateTimeImmutable;
  * Tests use these instead of calling constructors directly.
  *
  * {{FILL: one create{Entity}() factory per entity/state combination this project's
- *  tests need. Two patterns below — "created" (via the entity's own factory) and
+ *  tests need. Two patterns below - "created" (via the entity's own factory) and
  *  "reconstituted" (bypasses invariants to reach states only time can produce,
  *  e.g. expired tokens). reconstitute() is for test helpers ONLY.}}
  */

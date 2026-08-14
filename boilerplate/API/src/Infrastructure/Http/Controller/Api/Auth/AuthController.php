@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 /**
- * Login / me / logout. No kernel exception listener — each action catches the
+ * Login / me / logout. No kernel exception listener - each action catches the
  * exceptions it can produce and maps the status itself.
  *
  * {{FILL: add password reset, registration, or whatever onboarding this project
@@ -117,7 +117,7 @@ final class AuthController extends AbstractController
                 return $this->error('Token has no JTI claim', 'INVALID_TOKEN', 400);
             }
 
-            // Revoke for exactly the token's remaining lifetime — the blocklist
+            // Revoke for exactly the token's remaining lifetime - the blocklist
             // entry expires with it, so Redis never accumulates dead keys.
             $ttlSeconds = max(0, ($payload['exp'] ?? 0) - time());
             $jwtBlocklist->revoke((string) $jti, $ttlSeconds);

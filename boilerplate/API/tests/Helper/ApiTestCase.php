@@ -58,7 +58,7 @@ abstract class ApiTestCase extends WebTestCase
         return json_decode($this->client->getResponse()->getContent(), true);
     }
 
-    // {{FILL: one create{Role}AndGetToken() helper per user role. Pattern below —
+    // {{FILL: one create{Role}AndGetToken() helper per user role. Pattern below -
     //  adapt factory name, login route, and default credentials to this project.}}
     protected function createAdminAndGetToken(
         string $email = 'admin@test.com',

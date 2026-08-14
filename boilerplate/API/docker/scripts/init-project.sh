@@ -30,14 +30,14 @@ composer require --dev --no-interaction \
     phpunit/phpunit
 
 echo "=== Generating the JWT keypair ==="
-# Nothing else creates these — skip this and auth never boots.
+# Nothing else creates these - skip this and auth never boots.
 # The console command reads JWT_PASSPHRASE from .env via Symfony's Dotenv, so it
 # does NOT need to be exported into the shell. Only the openssl fallback does,
 # which is why the passphrase is read out of .env there rather than assumed.
 if php bin/console lexik:jwt:generate-keypair --skip-if-exists --no-interaction; then
     :
 else
-    echo "lexik command unavailable — falling back to openssl" >&2
+    echo "lexik command unavailable - falling back to openssl" >&2
     PASSPHRASE=$(grep -E '^JWT_PASSPHRASE=' .env | head -1 | cut -d= -f2- | tr -d '"'"'"'"')
     : "${PASSPHRASE:?JWT_PASSPHRASE not found in API/.env}"
     mkdir -p config/jwt

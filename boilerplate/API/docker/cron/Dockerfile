@@ -25,7 +25,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Same named-volume ownership trap as the php image — see docker/php/Dockerfile.
+# Same named-volume ownership trap as the php image - see docker/php/Dockerfile.
 RUN mkdir -p /var/www/html/vendor /var/www/html/var \
     && useradd -ms /bin/bash symfony \
     && chown -R symfony:symfony /var/www/html

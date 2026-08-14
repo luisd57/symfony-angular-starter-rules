@@ -12,7 +12,7 @@ use Doctrine\Migrations\AbstractMigration;
  *
  * Written by hand, not generated. Entities declare no Doctrine relation
  * attributes, so `doctrine:migrations:diff` cannot see foreign keys or indexes
- * declared here and will propose dropping them — see dev-gotchas.md.
+ * declared here and will propose dropping them - see dev-gotchas.md.
  */
 final class Version20240101000000 extends AbstractMigration
 {

@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 // Tailwind 3 config shape. Tailwind 4 moved theming into CSS (`@theme`) and does
-// not read this file — check which major you installed before editing.
+// not read this file - check which major you installed before editing.
 export default {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   theme: {

@@ -29,7 +29,7 @@ trait ApiResponseTrait
 
     /**
      * Named `envelope`, not `json`: a trait method cannot reduce the visibility
-     * of an inherited one, and AbstractController::json() is protected — a
+     * of an inherited one, and AbstractController::json() is protected - a
      * private json() here is a fatal compile error in every controller.
      *
      * @param array<string, mixed> $payload
