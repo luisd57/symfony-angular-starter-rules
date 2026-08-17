@@ -19,7 +19,7 @@ Copy `CLAUDE.md`, `.claude/`, `.mcp.json` and `boilerplate/` into an empty proje
 | Path | Purpose |
 |---|---|
 | `CLAUDE.md` | Project-manual template. Fill the tokens, delete what doesn't apply. |
-| `.claude/rules/` | Conventions. Stack rules are `paths:`-scoped so they load only for matching files; `documentation-style.md`, `git-conventions.md` and `dev-gotchas.md` are always on. |
+| `.claude/rules/` | Conventions. Stack rules are `paths:`-scoped so they load only for matching files; `documentation-style.md` and `git-conventions.md` are always on. |
 | `.claude/skills/scaffold-project/` | Ordered guide an agent follows to bootstrap a new project, plus the copy manifest and token list. Delete it once scaffolding is done. |
 | `.claude/skills/done/` | `/done` - records a finished milestone in `docs/STATUS.md`. |
 | `.claude/settings.json`, `.mcp.json` | Permission allowlist and the Playwright MCP server. |
@@ -27,6 +27,30 @@ Copy `CLAUDE.md`, `.claude/`, `.mcp.json` and `boilerplate/` into an empty proje
 
 Every credential in `boilerplate/` is a `CHANGE_ME` placeholder. Generate real values per
 project; the JWT keypair is created by `make init` and is gitignored.
+
+## What syncs back, and what doesn't
+
+The kit is a starting point, not a control plane. A project that diverges after meeting a real
+problem is working as intended, and that divergence carries information worth keeping. Only a
+small set of things should ever be pushed back across all projects.
+
+**Invariant** - the answer is the same everywhere, so the kit is authoritative and a mismatch is
+a defect to fix in every project:
+
+- The Process Skills section of `CLAUDE.md`. Which plugin provides them is a machine-level
+  decision, not a project trait.
+- `documentation-style.md`.
+- `git-conventions.md`.
+- `paths:` frontmatter hygiene - an always-on rule that could be scoped is a mistake anywhere.
+
+**Seed** - the kit supplies a v1 and the project owns it from then on. Do not diff these for
+convergence, and do not retro-fit one project's version onto another:
+
+- Every `paths:`-scoped stack rule (`api-*.md`, `angular*.md`, `astro-landing.md`,
+  `dev-gotchas.md`, `testing-policy.md`) and their filenames. A project with three deployables
+  wants `dashboard-angular.md`; one with a single `web/` does not.
+- `.claude/settings.json` permissions beyond the shared baseline.
+- Anything under `docs/`, `.scratch/`, or project-specific skills.
 
 ## Design notes
 

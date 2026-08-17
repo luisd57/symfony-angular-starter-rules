@@ -1,7 +1,21 @@
+---
+paths:
+  - Makefile
+  - docker-compose*.yml
+  - .github/workflows/**
+  - API/docker/**
+  - API/migrations/**
+  - API/tests/**
+  - "**/Dockerfile"
+  - "**/e2e/**"
+---
 # Dev Gotchas
 
 Behaviour that looks like a bug and isn't, plus traps this stack has already hit.
 Append project-specific entries; delete any section the project doesn't use.
+
+Terse entries: the trap and how to avoid it, nothing more. Incident history, dates, and the wrong
+turns someone took belong in project memory, not here.
 
 ## Docker / build
 
