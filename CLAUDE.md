@@ -83,7 +83,7 @@ workflows go in `.claude/skills/` instead. Follow `.claude/rules/documentation-s
 
 `.claude/hooks/` is the third place, for a convention worth enforcing rather than only stating.
 A hook fails open by design, so it never replaces the rule that explains why. Registration is in
-`.claude/settings.json`; run `npm test` in `.claude/hooks/` after changing one.
+`.claude/settings.json`. Run `npm test` in `.claude/hooks/` after changing one.
 
 ## Status
 

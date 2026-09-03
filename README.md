@@ -50,12 +50,18 @@ convergence, and do not retro-fit one project's version onto another:
 - Every `paths:`-scoped stack rule (`api-*.md`, `angular*.md`, `astro-landing.md`,
   `dev-gotchas.md`, `testing-policy.md`) and their filenames. A project with three deployables
   wants `dashboard-angular.md`; one with a single `web/` does not.
-- `.claude/settings.json` permissions beyond the shared baseline.
+- `.claude/settings.json` permissions beyond the shared baseline. Its `hooks` block is not
+  Seed - see below.
 - Anything under `docs/`, `.scratch/`, or project-specific skills.
-- `.claude/hooks/`. They encode this kit's conventions, so a project that moves a convention
-  moves its hook with it. `SOURCE_DIRS` in `skill-gate.mjs` is the line most projects edit
-  first, and it fails open: a deployable missing from that list means the TDD gate never
-  fires there and nothing reports it.
+- In `.claude/hooks/`, the parts a project configures: `SOURCE_DIRS` in `skill-gate.mjs`, and
+  any gate path a project has moved. `SOURCE_DIRS` fails open, so a deployable missing from
+  that list means the TDD gate never fires there and nothing reports it.
+
+`.claude/hooks/` splits across both buckets, so it does not sit in either list whole. The hook
+logic is **Invariant**: it enforces the Process Skills table and the `.scratch/` tracker layout,
+both of which are Invariant above, and a bug fixed in one project is a bug everywhere. The
+`hooks` block in `settings.json` is Invariant for the same reason. Only the configuration named
+in the Seed bullet is project-owned.
 
 ## Design notes
 

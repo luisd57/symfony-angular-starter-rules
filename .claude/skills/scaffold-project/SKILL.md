@@ -99,6 +99,5 @@ Protect `main`, require PRs, make the `test` check required and `e2e` advisory.
 - Write `docs/STATUS.md`. Delete unused rules files, unused `boilerplate/` directories, and
   `.claude/skills/scaffold-project/` - it has done its job. Keep `.claude/hooks/`.
 
-`ticket-duplicate.mjs` and `tracker-match.mjs` read a `.scratch/` tracker, and both sit dormant
-until the project has one. That is intended: they start enforcing it the day it appears, and a
-project without a tracker pays nothing for carrying them.
+Keep `ticket-duplicate.mjs` and `tracker-match.mjs` even with no `.scratch/` tracker yet. They
+sit dormant and start enforcing it the day one appears.
