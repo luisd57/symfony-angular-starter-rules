@@ -22,7 +22,8 @@ Copy `CLAUDE.md`, `.claude/`, `.mcp.json` and `boilerplate/` into an empty proje
 | `.claude/rules/` | Conventions. Stack rules are `paths:`-scoped so they load only for matching files; `documentation-style.md` and `git-conventions.md` are always on. |
 | `.claude/skills/scaffold-project/` | Ordered guide an agent follows to bootstrap a new project, plus the copy manifest and token list. Delete it once scaffolding is done. |
 | `.claude/skills/done/` | `/done` - records a finished milestone in `docs/STATUS.md`. |
-| `.claude/settings.json`, `.mcp.json` | Permission allowlist and the Playwright MCP server. |
+| `.claude/hooks/` | Four hooks enforcing the conventions above, registered in `settings.json`, tested with `npm test`. **Needs the `mattpocock-skills` plugin enabled** - `skill-gate.mjs` names its skills and nothing else clears those gates. |
+| `.claude/settings.json`, `.mcp.json` | Permission allowlist, hook registration, and the Playwright MCP server. |
 | `boilerplate/` | The project itself, minus the domain: Symfony config, docker-compose, Makefile, Dockerfiles, nginx, CI workflow, frontend config, and the PHP that would otherwise be rewritten every time. |
 
 Every credential in `boilerplate/` is a `CHANGE_ME` placeholder. Generate real values per
@@ -51,6 +52,10 @@ convergence, and do not retro-fit one project's version onto another:
   wants `dashboard-angular.md`; one with a single `web/` does not.
 - `.claude/settings.json` permissions beyond the shared baseline.
 - Anything under `docs/`, `.scratch/`, or project-specific skills.
+- `.claude/hooks/`. They encode this kit's conventions, so a project that moves a convention
+  moves its hook with it. `SOURCE_DIRS` in `skill-gate.mjs` is the line most projects edit
+  first, and it fails open: a deployable missing from that list means the TDD gate never
+  fires there and nothing reports it.
 
 ## Design notes
 

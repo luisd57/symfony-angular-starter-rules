@@ -18,7 +18,12 @@ listed in `references/tokens.md`.
 - Timezone `{{TZ}}` the app reasons in.
 - Role names: `{{ADMIN_ROLE}}` / `{{USER_ROLE}}` and their route prefixes.
 - Which apps: `API/` (always), `app/` (Angular), `landing/` (Astro + Svelte). Skipping one
-  means deleting its rules file, its `boilerplate/` directory, and its compose services.
+  means deleting its rules file, its `boilerplate/` directory, and its compose services. Renaming
+  one means editing `SOURCE_DIRS` in `.claude/hooks/skill-gate.mjs` to match, or the TDD gate
+  silently never fires for it.
+- The `mattpocock-skills` plugin must be enabled. `.claude/hooks/skill-gate.mjs` gates on its
+  skills by name, so without it those gates are denials nothing can clear. It is enabled per
+  machine, in `~/.claude/settings.json`, which this kit does not ship.
 - A Product-Requirements or brainstorm document, if one exists. Read it before scaffolding -
   it drives domain names, roles, and entities. If absent, scaffold structure only.
 
@@ -89,5 +94,11 @@ Protect `main`, require PRs, make the `test` check required and `e2e` advisory.
 - Log in via `curl` and confirm the `{{PROJECT}}_JWT` cookie comes back - that is what proves
   `services.yaml`, `rate_limiter.yaml`, the lexik config and both JWT listeners are wired.
 - One e2e smoke test green via the `e2e` profile.
+- `npm test` in `.claude/hooks/` green, which also proves `SOURCE_DIRS` matches this project's
+  deployables.
 - Write `docs/STATUS.md`. Delete unused rules files, unused `boilerplate/` directories, and
-  `.claude/skills/scaffold-project/` - it has done its job.
+  `.claude/skills/scaffold-project/` - it has done its job. Keep `.claude/hooks/`.
+
+`ticket-duplicate.mjs` and `tracker-match.mjs` read a `.scratch/` tracker, and both sit dormant
+until the project has one. That is intended: they start enforcing it the day it appears, and a
+project without a tracker pays nothing for carrying them.
