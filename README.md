@@ -22,7 +22,8 @@ Copy `CLAUDE.md`, `.claude/`, `.mcp.json` and `boilerplate/` into an empty proje
 | `.claude/rules/` | Conventions. Stack rules are `paths:`-scoped so they load only for matching files; `documentation-style.md` and `git-conventions.md` are always on. |
 | `.claude/skills/scaffold-project/` | Ordered guide an agent follows to bootstrap a new project, plus the copy manifest and token list. Delete it once scaffolding is done. |
 | `.claude/skills/done/` | `/done` - records a finished milestone in `docs/STATUS.md`. |
-| `.claude/settings.json`, `.mcp.json` | Permission allowlist and the Playwright MCP server. |
+| `.claude/hooks/` | Four hooks enforcing the conventions above, registered in `settings.json`, tested with `npm test`. **Needs the `mattpocock-skills` plugin enabled** - `skill-gate.mjs` names its skills and nothing else clears those gates. |
+| `.claude/settings.json`, `.mcp.json` | Permission allowlist, hook registration, and the Playwright MCP server. |
 | `boilerplate/` | The project itself, minus the domain: Symfony config, docker-compose, Makefile, Dockerfiles, nginx, CI workflow, frontend config, and the PHP that would otherwise be rewritten every time. |
 
 Every credential in `boilerplate/` is a `CHANGE_ME` placeholder. Generate real values per
@@ -49,8 +50,18 @@ convergence, and do not retro-fit one project's version onto another:
 - Every `paths:`-scoped stack rule (`api-*.md`, `angular*.md`, `astro-landing.md`,
   `dev-gotchas.md`, `testing-policy.md`) and their filenames. A project with three deployables
   wants `dashboard-angular.md`; one with a single `web/` does not.
-- `.claude/settings.json` permissions beyond the shared baseline.
+- `.claude/settings.json` permissions beyond the shared baseline. Its `hooks` block is not
+  Seed - see below.
 - Anything under `docs/`, `.scratch/`, or project-specific skills.
+- In `.claude/hooks/`, the parts a project configures: `SOURCE_DIRS` in `skill-gate.mjs`, and
+  any gate path a project has moved. `SOURCE_DIRS` fails open, so a deployable missing from
+  that list means the TDD gate never fires there and nothing reports it.
+
+`.claude/hooks/` splits across both buckets, so it does not sit in either list whole. The hook
+logic is **Invariant**: it enforces the Process Skills table and the `.scratch/` tracker layout,
+both of which are Invariant above, and a bug fixed in one project is a bug everywhere. The
+`hooks` block in `settings.json` is Invariant for the same reason. Only the configuration named
+in the Seed bullet is project-owned.
 
 ## Design notes
 

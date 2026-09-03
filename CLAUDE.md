@@ -81,6 +81,10 @@ Stack/architecture conventions go in `.claude/rules/*.md`. Add `paths:` frontmat
 rule to matching files (lazy-loaded); omit it for always-on rules. Repeatable multi-step
 workflows go in `.claude/skills/` instead. Follow `.claude/rules/documentation-style.md`.
 
+`.claude/hooks/` is the third place, for a convention worth enforcing rather than only stating.
+A hook fails open by design, so it never replaces the rule that explains why. Registration is in
+`.claude/settings.json`. Run `npm test` in `.claude/hooks/` after changing one.
+
 ## Status
 
 Current per-component status: `docs/STATUS.md`. Read it when the state of an unfinished
