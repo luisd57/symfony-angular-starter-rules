@@ -20,9 +20,11 @@ All from the **mattpocock-skills** plugin. Invoke them; do NOT restate their gui
 | Implementing anything | `tdd` |
 | Something broken, throwing, or slow | `diagnosing-bugs` |
 | Before opening a PR | `code-review` |
+| Writing the PR body | `pr` |
+| After the review, what the agent setup should change | `retro` |
 | Terminology or an ADR | `domain-modeling` |
 
-`to-spec`, `to-tickets` and `wayfinder` are user-invocable only. Ask for them rather than writing
+`to-spec`, `to-tickets`, `wayfinder` and `retro` are user-invocable only. Ask for them rather than writing
 a spec or ticket by hand.
 
 Keep this file and `.claude/rules/` focused on project facts the plugin doesn't cover.
